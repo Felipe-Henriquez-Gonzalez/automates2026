@@ -5,14 +5,20 @@
   gather_facts: false
 
   tasks:
-    - name: Obtener primera coincidencia del error unknown option
-      ansible.builtin.shell: >
-        grep "unknown option" /var/log/mariadb/mariadb.log |
-        head -n 1 |
-        grep -oP "'--\K[^']+"
-      register: mysql_unknown_option
+#    - name: Obtener primera coincidencia del error unknown option
+#      ansible.builtin.shell: >
+#        grep "unknown option" /var/log/mariadb/mariadb.log |
+#        head -n 1 |
+#        grep -oP "'--\K[^']+"
+#      register: mysql_unknown_option
+#      changed_when: false
+#      failed_when: false
+    - name: Obtener última coincidencia del error "unknown option"
+      ansible.builtin.shell: |
+        grep -h "unknown option" /var/log/mariadb/mariadb.log /var/log/mysql/error.log 2>/dev/null | tail -n 1
+      register: unknown_option_error
       changed_when: false
-      failed_when: false
+
 
     - name: Mostrar opcion encontrada
       ansible.builtin.debug:
