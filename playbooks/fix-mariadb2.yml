@@ -1,0 +1,79 @@
+---
+- name: Corregir unknown option en MariaDB y reiniciar servicio
+  hosts: all
+  become: true
+  gather_facts: false
+
+  vars:
+    mariadb_log: /var/log/mariadb/mariadb.log
+    mysql_service_name: mariadb
+    mysql_config_files:
+      - /etc/my.cnf
+      - /etc/my.cnf.d/*.cnf
+
+  tasks:
+    - name: Obtener las últimas 100 líneas del log
+      shell: "tail -n 100 {{ mariadb_log }} 2>/dev/null"
+      register: mariadb_log_output
+      changed_when: false
+
+    - name: Buscar línea con 'unknown option'
+      set_fact:
+        unknown_option_line: >-
+          {{
+            mariadb_log_output.stdout_lines
+            | select('search', '\\[ERROR\\].*unknown option')
+            | list
+            | last
+            | default('')
+          }}
+
+    - name: Mostrar línea detectada
+      debug:
+        msg: "{{ unknown_option_line }}"
+      when: unknown_option_line | length > 0
+
+    - name: Extraer la opción desconocida
+      set_fact:
+        unknown_option: >-
+          {{
+            unknown_option_line
+            | regex_replace('.*unknown option ''--([^'']+)''.*', '\\1')
+          }}
+      when: unknown_option_line | length > 0
+
+    - name: Mostrar opción detectada
+      debug:
+        msg: "Opción desconocida detectada: --{{ unknown_option }}"
+      when: unknown_option is defined and unknown_option | length > 0
+
+    - name: Eliminar opción desconocida de /etc/my.cnf
+      lineinfile:
+        path: /etc/my.cnf
+        regexp: '^\s*{{ unknown_option | regex_escape() }}\b.*$|^\s*--{{ unknown_option | regex_escape() }}\b.*$'
+        state: absent
+        backup: true
+      when:
+        - unknown_option is defined
+        - unknown_option | length > 0
+      ignore_errors: true
+
+    - name: Eliminar opción desconocida de archivos en /etc/my.cnf.d
+      replace:
+        path: "{{ item }}"
+        regexp: '^\s*(--)?{{ unknown_option | regex_escape() }}\b.*\n?'
+        replace: ''
+        backup: true
+      loop: "{{ query('fileglob', '/etc/my.cnf.d/*.cnf') }}"
+      when:
+        - unknown_option is defined
+        - unknown_option | length > 0
+      ignore_errors: true
+
+    - name: Reiniciar MariaDB
+      service:
+        name: "{{ mysql_service_name }}"
+        state: restarted
+      when:
+        - unknown_option is defined
+        - unknown_option | length > 0
