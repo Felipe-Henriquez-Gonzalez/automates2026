@@ -16,7 +16,7 @@
     - name: Obtener última coincidencia del error "unknown option"
       ansible.builtin.shell: |
         grep -h "unknown option" /var/log/mariadb/mariadb.log /var/log/mysql/error.log 2>/dev/null | tail -n 1
-      register: mysql_unknown_option_error
+      register: mysql_unknown_option
       changed_when: false
       failed_when: false
 
