@@ -2,7 +2,7 @@
   hosts: all
   become: yes
   vars:
-    variable_a_borrar: "{{ mysql_unknown_option }}"
+    variable_a_borrar: "{{ _mysql_unknown_option }}"
 
   tasks:
     - name: Mostrar la variable a borrar 
