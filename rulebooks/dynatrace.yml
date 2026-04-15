@@ -17,8 +17,3 @@
           job_args:
             extra_vars:
               vm_name: "{{ event.payload.eventData['host.name'][0] }}"
-
-  
-          job_args:
-            extra_vars:
-              vm_name: "{{ event.payload.eventData['host.name'][0] }}"
