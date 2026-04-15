@@ -8,12 +8,12 @@
         port: 4997
 
   rules:
-    - name: High CPU Usage Detected
+    - name: mariabd fail
       condition: event.payload.eventData['event.name'] == "Service is in an undesirable state"
       action:
         run_workflow_template:
           name: "mariadb remediation"
-          organization: "Infrastructure"
+          organization: "Default"
           job_args:
             extra_vars:
               vm_name: "{{ event.payload.eventData['host.name'][0] }}"
