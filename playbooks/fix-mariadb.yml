@@ -1,0 +1,37 @@
+---
+- name: Detectar y corregir errores "unknown" en MariaDB
+  hosts: all
+  become: yes
+
+  vars:
+    mariadb_log: /var/log/mariadb/mariadb.log
+
+  tasks:
+
+    - name: Obtener últimas 100 líneas del log
+      shell: "tail -n 100 {{ mariadb_log }} 2>/dev/null"
+      register: log_output
+      changed_when: false
+
+    - name: Filtrar líneas con 'unknown'
+      set_fact:
+        unknown_errors: "{{ log_output.stdout_lines | select('search', 'unknown|Unknown|desconocido') | list }}"
+
+    - name: Mostrar errores encontrados
+      debug:
+        var: unknown_errors
+
+    - name: Ejecutar corrección si hay errores
+      when: unknown_errors | length > 0
+      block:
+
+        - name: Ejemplo - eliminar configuración inválida en my.cnf
+          lineinfile:
+            path: /etc/my.cnf
+            regexp: '.*unknown.*'
+            state: absent
+
+        - name: Reiniciar MariaDB
+          service:
+            name: mariadb
+            state: restarted
