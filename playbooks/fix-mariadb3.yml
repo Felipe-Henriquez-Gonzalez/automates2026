@@ -18,3 +18,7 @@
       ansible.builtin.debug:
         msg: "La opcion desconocida encontrada es: {{ mysql_unknown_option.stdout }}"
       when: mysql_unknown_option.stdout != ""
+    - name: solicita resolucion a la IA
+      ansible.builtin.set_stats:
+        data: 
+          mysql_unknown_option: "{{ mysql_unknown_option.stdout }}"
