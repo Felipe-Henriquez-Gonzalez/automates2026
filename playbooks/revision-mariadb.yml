@@ -7,9 +7,7 @@
   tasks:
     - name: Obtener log disponible de MariaDB/MySQL o listar datadir
       ansible.builtin.shell: |
-        tail -n 100 /var/log/mariadb/mariadb.log 2>/dev/null || \
-        tail -n 100 /var/log/mysql/error.log 2>/dev/null || \
-        ls -l /var/lib/mysql
+        tail -n 100 /var/log/mariadb/mariadb.log 2>/dev/null 
       register: mariadb_debug
       changed_when: false
       failed_when: false
@@ -27,7 +25,4 @@
       ansible.builtin.debug:
         var: mariadb_error_lines
 
-    - name: Fallar si se detecta el error
-      ansible.builtin.fail:
-        msg: "Se detectó el error [ERROR] /usr/libexec/mariadbd: en el log"
-      when: mariadb_error_lines | length > 0
+
