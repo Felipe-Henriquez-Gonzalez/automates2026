@@ -1,0 +1,85 @@
+---
+- name: Solicitar a OpenAI la generacion de un playbook de Ansible
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    openai_api_key: "{{ lookup('env', 'OPENAI_API_KEY') }}"
+    openai_model: "gpt-5"
+    prompt_usuario: |
+      Crea un playbook de Ansible para RHEL 10 que:
+      1. valide si el servicio de mariadb está instalado
+      2. lo instale si no existe
+      3. lo habilite y levante
+      4. si el servicio esta fallido haga un debug del log en /var/log/mariadb/mariadb.log
+      5. resuelva el problema
+      6. devuelva un resultado final claro
+
+      Requisitos:
+      - usar buenas prácticas
+      - incluir nombres de tareas descriptivos
+      - devolver solo YAML válido
+      - no agregar explicaciones fuera del playbook
+
+  tasks:
+    - name: Validar que exista OPENAI_API_KEY
+      ansible.builtin.fail:
+        msg: "La variable de entorno OPENAI_API_KEY no está definida."
+      when: openai_api_key | length == 0
+
+    - name: Enviar solicitud a la API de OpenAI
+      ansible.builtin.uri:
+        url: "https://api.openai.com/v1/responses"
+        method: POST
+        headers:
+          Authorization: "Bearer {{ openai_api_key }}"
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          model: "{{ openai_model }}"
+          reasoning:
+            effort: "low"
+          input:
+            - role: developer
+              content: "Eres un experto en Ansible. Responde solamente con YAML válido de un playbook."
+            - role: user
+              content: "{{ prompt_usuario }}"
+        return_content: true
+        status_code: 200
+      register: openai_response
+      no_log: true
+
+    - name: Mostrar respuesta completa para depuración opcional
+      ansible.builtin.debug:
+        var: openai_response.json
+      when: false
+
+    - name: Extraer texto generado
+      ansible.builtin.set_fact:
+        playbook_generado: >-
+          {{
+            (
+              openai_response.json.output
+              | selectattr('type', 'equalto', 'message')
+              | map(attribute='content')
+              | list
+              | first
+              | selectattr('type', 'equalto', 'output_text')
+              | map(attribute='text')
+              | join('\n')
+            )
+          }}
+
+    - name: Mostrar playbook generado
+      ansible.builtin.debug:
+        msg: "{{ playbook_generado }}"
+
+    - name: Guardar playbook generado en archivo
+      ansible.builtin.copy:
+        dest: "/tmp/playbook_generado.yml"
+        content: "{{ playbook_generado }}"
+        mode: "0644"
+
+    - name: Informar ruta del archivo generado
+      ansible.builtin.debug:
+        msg: "El playbook fue guardado en /tmp/playbook_generado.yml"
