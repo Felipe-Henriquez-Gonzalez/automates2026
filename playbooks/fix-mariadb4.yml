@@ -5,6 +5,9 @@
     variable_a_borrar: "{{ mysql_unknown_option }}"
 
   tasks:
+    - name: Mostrar la variable a borrar 
+      ansible.builtin.debug
+        msg: "{{ variable_a_borrar }}"
     - name: Eliminar línea que contiene la variable
       ansible.builtin.lineinfile:
         path: /etc/my.cnf
