@@ -21,4 +21,4 @@
     - name: solicita resolucion a la IA
       ansible.builtin.set_stats:
         data: 
-          mysql_unknown_option: "{{ mysql_unknown_option.stdout }}"
+          _mysql_unknown_option: "{{ mysql_unknown_option.stdout }}"
