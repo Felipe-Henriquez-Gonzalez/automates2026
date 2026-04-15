@@ -8,12 +8,10 @@
         port: 4997
 
   rules:
-    - name: mariabd fail
+    - name: mariabd failed
       condition: event.payload.eventData['event.name'] == "Service is in an undesirable state"
       action:
         run_workflow_template:
           name: "mariadb remediation"
           organization: "Default"
-          job_args:
-            extra_vars:
-              vm_name: "{{ event.payload.eventData['host.name'][0] }}"
+
