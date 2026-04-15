@@ -1,0 +1,33 @@
+---
+- name: Filtrar errores de MariaDB
+  hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Obtener log disponible de MariaDB/MySQL o listar datadir
+      ansible.builtin.shell: |
+        tail -n 100 /var/log/mariadb/mariadb.log 2>/dev/null || \
+        tail -n 100 /var/log/mysql/error.log 2>/dev/null || \
+        ls -l /var/lib/mysql
+      register: mariadb_debug
+      changed_when: false
+      failed_when: false
+
+    - name: Filtrar solo lineas con error de mariadbd
+      ansible.builtin.set_fact:
+        mariadb_error_lines: >-
+          {{
+            mariadb_debug.stdout_lines
+            | select('search', '\[ERROR\] /usr/libexec/mariadbd:')
+            | list
+          }}
+
+    - name: Mostrar lineas filtradas
+      ansible.builtin.debug:
+        var: mariadb_error_lines
+
+    - name: Fallar si se detecta el error
+      ansible.builtin.fail:
+        msg: "Se detectó el error [ERROR] /usr/libexec/mariadbd: en el log"
+      when: mariadb_error_lines | length > 0
