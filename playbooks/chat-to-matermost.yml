@@ -10,13 +10,11 @@
         method: POST
         headers:
           Content-Type: "application/json"
-        body: >
-          {
-            "text": Mysql tiene el parametro {{ mysql_unknown_option }} que no está reconocido, se procederá a revalidar
-          }
         body_format: json
-        validate_certs: no
-        return_content: yes
+        body:
+          text: 'Mysql tiene el parametro "{{ mysql_unknown_option }}" que no está reconocido, se procederá a revalidar'
+        validate_certs: false
+        return_content: true
       register: response
 
     - name: Mostrar respuesta del servidor
