@@ -1,0 +1,24 @@
+---
+- name: Enviar POST a webhook con JSON usando Ansible
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Enviar texto a webhook chatops
+      ansible.builtin.uri:
+        url: "{{ _url }}"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+        body: >
+          {
+            "text": Mysql tiene el parametro "{{ Fallo }}" que no está reconocido, se procederá a revalidar
+          }
+        body_format: json
+        validate_certs: no
+        return_content: yes
+      register: response
+
+    - name: Mostrar respuesta del servidor
+      ansible.builtin.debug:
+        var: response.content
