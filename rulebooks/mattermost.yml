@@ -1,0 +1,62 @@
+---
+- name: Listen for Mattermost events on a webhook
+  hosts: all
+  sources:
+    - ansible.eda.webhook:
+        host: 0.0.0.0
+        port: 5000
+  rules:
+    - name: Escuchar evento de listar vlans
+      condition: event.payload.channel_name  == "town-square" and event.payload.trigger_word == "listar-vlans"
+      action:
+        run_workflow_template:
+          name: "WFchatops"
+          organization: "Default"
+    - name: Escuchar evento de shrun
+      condition: event.payload.channel_name  == "town-square" and event.payload.trigger_word == "shrun"
+      action:
+        run_workflow_template:
+          name: "WFciscoConfig"
+          organization: "Default"
+    - name: Escuchar crea vlan 10
+      condition: event.payload.channel_name  == "town-square" and event.payload.trigger_word == "crea-vlan-10"
+      action:
+        run_workflow_template:
+          name: "WF-crea-vlan-10"
+          organization: "Default"
+    - name: Escuchar crea vlan 20
+      condition: event.payload.channel_name  == "town-square" and event.payload.trigger_word == "crea-vlan-20"
+      action:
+        run_workflow_template:
+          name: "WF-crea-vlan-20"
+          organization: "Default"
+    - name: Escuchar crea vlan 30
+      condition: event.payload.channel_name  == "town-square" and event.payload.trigger_word == "crea-vlan-30"
+      action:
+        run_workflow_template:
+          name: "WF-crea-vlan-30"
+          organization: "Default"
+    - name: Escuchar show vlan brief
+      condition: event.payload.channel_name  == "town-square" and event.payload.trigger_word == "vlan-brief"
+      action:
+        run_workflow_template:
+          name: "WFvlanbrief"
+          organization: "Default"
+    - name: Escuchar mostrar meraki
+      condition: event.payload.channel_name  == "town-square" and event.payload.trigger_word == "meraki"
+      action:
+        run_workflow_template:
+          name: "wf-listarmeraki"
+          organization: "Default"
+    - name: Escuchar listar interfaces
+      condition: event.payload.channel_name  == "town-square" and event.payload.trigger_word == "listar-interfaces"
+      action:
+        run_workflow_template:
+          name: "WFgetinterfaces"
+          organization: "Default"
+    - name: CPU Saturation 
+      condition: event.payload.channel_name  == "town-square" and event.payload.trigger_word == "cpu-saturation"
+      action:
+        run_job_template:
+          name: "CPU-solve"
+          organization: "Default"
