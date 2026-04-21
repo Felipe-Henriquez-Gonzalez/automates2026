@@ -20,7 +20,7 @@
         run_workflow_template:
           name: "mas-info"
           organization: "Default"
-    - name: Lanzar workflow recuperar cuando llegue action resolver
+    - name: Lanzar workflow mas info
       condition: event.action == "mas-info"
       action:
         run_workflow_template:
