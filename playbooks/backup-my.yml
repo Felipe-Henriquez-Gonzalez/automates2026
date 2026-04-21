@@ -1,0 +1,37 @@
+---
+- name: Respaldar my.cnf con fecha y permisos originales
+  hosts: all
+  become: true
+  gather_facts: true
+
+  vars:
+    source_file: /etc/my.cnf
+    backup_dir: /backup/db
+    backup_file: "{{ backup_dir }}/my.cnf_{{ ansible_date_time.date | replace('-', '') }}_{{ ansible_date_time.time | replace(':', '') }}.bak"
+
+  tasks:
+    - name: Obtener datos del archivo origen
+      ansible.builtin.stat:
+        path: "{{ source_file }}"
+      register: source_stat
+
+    - name: Crear directorio de backup si no existe
+      ansible.builtin.file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Copiar archivo de respaldo
+      ansible.builtin.copy:
+        src: "{{ source_file }}"
+        dest: "{{ backup_file }}"
+        remote_src: true
+
+    - name: Aplicar mismos permisos que el archivo origen
+      ansible.builtin.file:
+        path: "{{ backup_file }}"
+        mode: "{{ source_stat.stat.mode }}"
+
+    - name: Mostrar nombre del archivo generado
+      ansible.builtin.debug:
+        msg: "Backup creado en {{ backup_file }}"
