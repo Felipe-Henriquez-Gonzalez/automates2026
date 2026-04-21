@@ -1,8 +1,9 @@
 ---
-- name: Ejecutar workflow recuperar desde evento
-  hosts: localhost
+- name: Listen for events on a webhook from chatops
+  hosts: all
   sources:
-    - ansible.eda.webhook:
+    - name: Listen for alerts from Dynatrace
+      eda.builtin.webhook:
         host: 0.0.0.0
         port: 6000
 
