@@ -1,0 +1,22 @@
+---
+- name: Mostrar archivos disponibles para recuperacion en /backup/db/
+  hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Obtener lista de archivos en /backup/db/
+      ansible.builtin.find:
+        paths: /backup/db/
+        file_type: file
+      register: backups_encontrados
+
+    - name: Mostrar alternativas de recuperacion
+      ansible.builtin.debug:
+        msg: |
+          las alternativas de recuperacion del archivo de backup son los siguientes:
+          {% for archivo in backups_encontrados.files | sort(attribute='path') %}
+          - {{ archivo.path }}
+          {% else %}
+          - No se encontraron archivos en /backup/db/
+          {% endfor %}
