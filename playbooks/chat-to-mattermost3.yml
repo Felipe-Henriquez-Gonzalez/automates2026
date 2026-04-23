@@ -1,0 +1,22 @@
+---
+- name: Enviar POST a webhook con JSON usando Ansible
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Enviar texto a webhook chatops
+      ansible.builtin.uri:
+        url: "{{ _url }}"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          text:  "{{ playbook_generado }}"
+        validate_certs: false
+        return_content: true
+      register: response
+
+    - name: Mostrar respuesta del servidor
+      ansible.builtin.debug:
+        var: response.content
