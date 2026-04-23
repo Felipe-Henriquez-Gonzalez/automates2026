@@ -58,4 +58,4 @@
     - name: envia Playbook al siguiente paso
       ansible.builtin.set_stats:
         data: 
-          generated_playbook_out: "{{ generated_playbook.stdout }}"
+          generated_playbook_out: "{{ generated_playbook }}"
