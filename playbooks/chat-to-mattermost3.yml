@@ -17,7 +17,7 @@
         return_content: true
       register: response_0
 
-    - name: Enviar playbook a chat
+    - name: Enviar playbook a chat en bloque YAML
       ansible.builtin.uri:
         url: "{{ _url }}"
         method: POST
@@ -25,7 +25,7 @@
           Content-Type: "application/json"
         body_format: json
         body:
-          text: "{{ generated_playbook_out }}"
+          text: "{{ '```yaml\n' ~ generated_playbook_out ~ '\n```' }}"
         validate_certs: false
         return_content: true
       register: response_1
@@ -45,4 +45,4 @@
 
     - name: Mostrar respuesta del servidor
       ansible.builtin.debug:
-        var: response_1.content
+        var: response_1
