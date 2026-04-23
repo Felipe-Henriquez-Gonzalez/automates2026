@@ -12,7 +12,7 @@
           Content-Type: "application/json"
         body_format: json
         body:
-          text:  "{{ playbook_generado }}"
+          text:  "{{ playbook_generado_out }}"
         validate_certs: false
         return_content: true
       register: response
