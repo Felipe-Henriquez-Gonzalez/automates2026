@@ -12,7 +12,11 @@
           Content-Type: "application/json"
         body_format: json
         body:
-          text:  "{{ generated_playbook_out }}"
+          text: Se ha generado el siguiente Playbook
+                ____________________________________
+                "{{ generated_playbook_out }}"
+                ____________________________________
+                si desea ejecutarlo escriba resolver
         validate_certs: false
         return_content: true
       register: response
