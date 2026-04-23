@@ -4,7 +4,7 @@
   gather_facts: false
 
   vars:
-    openai_api_key: "{{ lookup('env', 'OPENAI_API_KEY') }}"
+    openai_api_key: "{{ OPENAI_API_KEY }}"
     openai_model: "gpt-4.1-mini"
 
     user_prompt: >-
