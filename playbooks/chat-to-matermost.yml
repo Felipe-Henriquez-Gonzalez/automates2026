@@ -12,7 +12,7 @@
           Content-Type: "application/json"
         body_format: json
         body:
-          text: 'Mariadb tiene en el archivo my.cnf el siguiente parametro  "{{ _mysql_unknown_option }}" que es un parametro invalido si escribe reparar se puede corregir quitando ese parametro, si escribe recupear se puede recupear al ultimo backup de la configuracion'
+          text: 'Mariadb tiene en el archivo my.cnf el siguiente parametro  "{{ _mysql_unknown_option }}" que es un parametro invalido si escribe resolver se puede corregir quitando ese parametro, si escribe recupear se puede recupear al ultimo backup de la configuracion'
         validate_certs: false
         return_content: true
       register: response
