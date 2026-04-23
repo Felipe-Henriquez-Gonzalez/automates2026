@@ -17,7 +17,7 @@
         validate_certs: false
         return_content: true
       register: response.0
-    - name: Enviar texto a webhook chatops
+    - name: Enviar playbook a chat
       ansible.builtin.uri:
         url: "{{ _url }}"
         method: POST
@@ -31,7 +31,7 @@
         validate_certs: false
         return_content: true
       register: response.1
-    - name: Enviar texto a webhook chatops
+    - name: solicitar respuesta a chat
       ansible.builtin.uri:
         url: "{{ _url }}"
         method: POST
