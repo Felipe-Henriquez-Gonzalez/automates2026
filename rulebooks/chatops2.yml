@@ -8,12 +8,6 @@
         port: 6001
 
   rules:
-    - name: Debug evento recibido
-      condition: event.payload is defined
-      action:
-        print_event:
-          pretty: true
-
     - name: Ejecutar workflow cuando action sea recuperar
       condition: event.action == "recuperar"
       action:
