@@ -1,0 +1,57 @@
+---
+- name: Generar playbook de Ansible usando Lightspeed
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    openai_api_key: "{{ lookup('env', 'OPENAI_API_KEY') }}"
+    openai_model: "gpt-4.1-mini"
+
+    user_prompt: >-
+      {{ prompt | default('Crea un playbook que instale nginx en RHEL y levante el servicio') }}
+
+    system_instructions: |
+      Eres un experto en Ansible.
+      Debes responder únicamente con YAML válido de un playbook de Ansible.
+      No agregues explicación.
+      No uses markdown.
+      No encierres la respuesta en bloques de código.
+      El resultado debe ser YAML limpio.
+
+  tasks:
+    - name: Validar API key
+      ansible.builtin.fail:
+        msg: "No se encontró OPENAI_API_KEY."
+      when: openai_api_key | default('') | length == 0
+
+    - name: Llamar a Lighspeed
+      ansible.builtin.uri:
+        url: "https://api.openai.com/v1/responses"
+        method: POST
+        headers:
+          Authorization: "Bearer {{ openai_api_key }}"
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          model: "{{ openai_model }}"
+          input: |
+            {{ system_instructions }}
+
+            Genera un playbook para:
+            {{ user_prompt }}
+        return_content: true
+        status_code: 200
+      register: openai_response
+
+    - name: Extraer playbook generado
+      ansible.builtin.set_fact:
+        generated_playbook: "{{ openai_response.json.output[0].content[0].text }}"
+
+    - name: Mostrar playbook generado (OUTPUT FINAL)
+      ansible.builtin.debug:
+        msg: |
+          ================= PLAYBOOK GENERADO =================
+
+          {{ generated_playbook }}
+
+          ====================================================
