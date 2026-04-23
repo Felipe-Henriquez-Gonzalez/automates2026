@@ -4,6 +4,19 @@
   gather_facts: false
 
   tasks:
+      - name: notificar playbook en proceso
+      ansible.builtin.uri:
+        url: "{{ _url }}"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          text: Lighspeed ha generado el siguiente Playbook
+                
+        validate_certs: false
+        return_content: true
+      register: response.0
     - name: Enviar texto a webhook chatops
       ansible.builtin.uri:
         url: "{{ _url }}"
@@ -12,15 +25,26 @@
           Content-Type: "application/json"
         body_format: json
         body:
-          text: Se ha generado el siguiente Playbook
-                ____________________________________
+          text: 
                 "{{ generated_playbook_out }}"
-                ____________________________________
-                si desea ejecutarlo escriba resolver
+                
         validate_certs: false
         return_content: true
-      register: response
-
+      register: response.1
+    - name: Enviar texto a webhook chatops
+      ansible.builtin.uri:
+        url: "{{ _url }}"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          text: si desea ejecutarlo escriba resolver
+                
+        validate_certs: false
+        return_content: true
+      register: response.2
+      
     - name: Mostrar respuesta del servidor
       ansible.builtin.debug:
-        var: response.content
+        var: response1.content
