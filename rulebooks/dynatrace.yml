@@ -8,10 +8,10 @@
         port: 4997
 
   rules:
-    - name: mariabd failed
+    - name: Maria DB Fail
       condition: event.payload.eventData['event.name'] == "Service is in an undesirable state"
       action:
         run_workflow_template:
-          name: "mariadb remediation"
+          name: "alerta dynatrace"
           organization: "Default"
 
