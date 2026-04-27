@@ -38,10 +38,25 @@
           Content-Type: "application/json"
         body_format: json
         body:
-          text: "Si desea ejecutarlo escriba resolver"
+          text: "Ansible Automation Platform esta ejecutando la remediación"
         validate_certs: false
         return_content: true
       register: response_2
+
+
+    - name: Solicitar respuesta a chat
+      ansible.builtin.uri:
+        url: "{{ _url }}"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          text: "El servicio de Mariadb ya se encuentra operativo"
+        validate_certs: false
+        return_content: true
+      register: response_2
+
 
     - name: Mostrar respuesta del servidor
       ansible.builtin.debug:
