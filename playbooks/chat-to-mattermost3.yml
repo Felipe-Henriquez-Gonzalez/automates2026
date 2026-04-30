@@ -12,7 +12,7 @@
           Content-Type: "application/json"
         body_format: json
         body:
-          text: "Lightspeed ha generado el siguiente Playbook"
+          text: "Ansible Coding Asistant ha generado el siguiente Playbook"
         validate_certs: false
         return_content: true
       register: response_0
@@ -38,7 +38,7 @@
           Content-Type: "application/json"
         body_format: json
         body:
-          text: "Ansible Automation Platform esta ejecutando la remediación"
+          text: "Ansible Automation Platform ha creado el nuevo Job Template"
         validate_certs: false
         return_content: true
       register: response_2
@@ -52,7 +52,7 @@
           Content-Type: "application/json"
         body_format: json
         body:
-          text: "El servicio de Mariadb ya se encuentra operativo"
+          text: "desea Aplicar la resolucion escriba Resolver "
         validate_certs: false
         return_content: true
       register: response_2
