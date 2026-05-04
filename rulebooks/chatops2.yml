@@ -9,10 +9,10 @@
 
   rules:
     - name: Ejecutar workflow cuando action sea recuperar
-      condition: event.payload.action == "recuperar"
+      condition: event.payload.action == "analizar"
       action:
         run_workflow_template:
-          name: "recuperar"
+          name: "analizar"
           organization: "Default"
 
     - name: Lanzar workflow recuperar cuando llegue action resolver
