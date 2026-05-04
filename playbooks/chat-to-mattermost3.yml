@@ -38,7 +38,7 @@
           Content-Type: "application/json"
         body_format: json
         body:
-          text: "Ansible Automation Platform ha creado el nuevo Job Template"
+          text: "Ansible Automation Platform ha creado el nuevo Job Template fix Mariadb"
         validate_certs: false
         return_content: true
       register: response_2
