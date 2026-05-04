@@ -12,7 +12,7 @@
           Content-Type: "application/json"
         body_format: json
         body:
-          text: 'Se ha ejecutado el Job Template fix mariabd quitando el parametro  "{{ _mysql_unknown_option }}" Se reicio el servicio y la base de datos ya encuentra operando correctamente'
+          text: 'Se ha ejecutado el Job Template fix mariabd eliminando el parámetro  "{{ _mysql_unknown_option }}" Posteriormente, se reinició el servicio MariaDB y se validó que la base de datos ya se encuentra operando correctamente.'
         validate_certs: false
         return_content: true
       register: response
