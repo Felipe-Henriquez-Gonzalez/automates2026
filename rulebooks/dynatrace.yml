@@ -8,7 +8,7 @@
         port: 4997
 
   rules:
-    - name: Maria DB Fail
+    - name: Error en Linux
       condition: event.payload.eventData['event.name'] == "Service is in an undesirable state"
       action:
         run_workflow_template:
